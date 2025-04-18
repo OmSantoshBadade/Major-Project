@@ -1,4 +1,4 @@
-# Credit Card Recommendation System
+# Credit Card Recommendation System (Note:-In PROTOTYPE 3 Folder)
 
 A Python-based credit card recommendation system that helps users find the most suitable credit card based on their preferences and spending habits.
 
