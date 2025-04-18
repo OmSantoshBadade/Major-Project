@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CIBILIZE Calculators</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
+    body { background: #f0f4f8; color: #333; transition: background 0.3s, color 0.3s; }
+    header { background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%); padding: 1rem 2rem; position: sticky; top: 0; z-index: 1000; display: flex; justify-content: space-between; align-items: center; color: white; }
+    header .logo { font-size: 1.8rem; font-weight: 700; letter-spacing: 1px; }
+    .toggle-btn { background: white; border: none; padding: 0.5rem 1rem; border-radius: 20px; color: #2575fc; cursor: pointer; font-weight: 600; transition: background 0.3s, color 0.3s; }
+    main { padding: 2rem; max-width: 1300px; margin: auto; display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 2rem; }
+    .card { background: white; border-radius: 16px; box-shadow: 0 6px 12px rgba(0,0,0,0.1); padding: 2rem 1.5rem; text-align: center; transition: transform 0.3s ease, box-shadow 0.3s ease; position: relative; overflow: hidden; }
+    .card::before { content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background: linear-gradient(135deg, rgba(106,17,203,0.1) 0%, rgba(37,117,252,0.1) 100%); transform: rotate(25deg); z-index: 0; }
+    .card h3, .card p { position: relative; z-index: 1; }
+    .card:hover { transform: translateY(-8px); box-shadow: 0 12px 20px rgba(0,0,0,0.15); }
+    @media (max-width: 600px) { header { flex-direction: column; } header .logo { margin-bottom: 0.5rem; } }
+    .dark-mode { background: #121212; color: #f0f0f0; }
+    .dark-mode header { background: linear-gradient(135deg, #232526 0%, #414345 100%); color: white; }
+    .dark-mode .card { background: #1e1e1e; box-shadow: 0 6px 12px rgba(255,255,255,0.05); }
+    .dark-mode .toggle-btn { background: #333; color: #00c6ff; }
+    .calculator { margin-top: 1.5rem; }
+    .calculator input { padding: 0.5rem; margin: 0.5rem 0; width: 100%; border: 1px solid #ccc; border-radius: 8px; }
+    .calculator button { margin-top: 0.5rem; width: 100%; padding: 0.7rem; border: none; background-color: #2575fc; color: white; border-radius: 8px; font-weight: bold; cursor: pointer; }
+    .result { margin-top: 1rem; font-weight: 600; display: none; }
+    .loading { display: none; font-size: 20px; color: #2575fc; }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="logo">CIBILIZE</div>
+  <button class="toggle-btn" onclick="toggleDarkMode()">Toggle Mode</button>
+</header>
+
+<main>
+  <!-- SIP Calculator -->
+  <div class="card">
+    <h3>SIP Calculator</h3>
+    <div class="calculator">
+      <input type="number" id="sip-amount" placeholder="Monthly Investment (₹)">
+      <input type="number" id="sip-rate" placeholder="Annual Return Rate (%)">
+      <input type="number" id="sip-years" placeholder="Years">
+      <button onclick="calculateSIP()">Calculate SIP</button>
+      <p id="sip-result" class="result"></p>
+      <p id="sip-loading" class="loading">Calculating...</p>
+    </div>
+  </div>
+
+  <!-- EMI Calculator -->
+  <div class="card">
+    <h3>EMI Calculator</h3>
+    <div class="calculator">
+      <input type="number" id="loan-amount" placeholder="Loan Amount (₹)">
+      <input type="number" id="loan-rate" placeholder="Annual Interest Rate (%)">
+      <input type="number" id="loan-years" placeholder="Loan Tenure (Years)">
+      <button onclick="calculateEMI()">Calculate EMI</button>
+      <p id="emi-result" class="result"></p>
+      <p id="emi-loading" class="loading">Calculating...</p>
+    </div>
+  </div>
+
+  <!-- Retirement Calculator -->
+  <div class="card">
+    <h3>Retirement Calculator</h3>
+    <div class="calculator">
+      <input type="number" id="current-age" placeholder="Current Age">
+      <input type="number" id="retirement-age" placeholder="Retirement Age">
+      <input type="number" id="monthly-saving" placeholder="Monthly Saving (₹)">
+      <input type="number" id="expected-return" placeholder="Expected Return Rate (%)">
+      <button onclick="calculateRetirement()">Calculate Retirement</button>
+      <p id="retirement-result" class="result"></p>
+      <p id="retirement-loading" class="loading">Calculating...</p>
+    </div>
+  </div>
+
+  <!-- FD Calculator -->
+  <div class="card">
+    <h3>FD Calculator</h3>
+    <div class="calculator">
+      <input type="number" id="fd-principal" placeholder="Principal Amount (₹)">
+      <input type="number" id="fd-rate" placeholder="Interest Rate (%)">
+      <input type="number" id="fd-years" placeholder="Years">
+      <button onclick="calculateFD()">Calculate FD</button>
+      <p id="fd-result" class="result"></p>
+      <p id="fd-loading" class="loading">Calculating...</p>
+    </div>
+  </div>
+
+  <!-- PPF Calculator -->
+  <div class="card">
+    <h3>PPF Calculator</h3>
+    <div class="calculator">
+      <input type="number" id="ppf-amount" placeholder="Yearly Investment (₹)">
+      <input type="number" id="ppf-rate" placeholder="Interest Rate (%)">
+      <input type="number" id="ppf-years" placeholder="Years (Max 15)">
+      <button onclick="calculatePPF()">Calculate PPF</button>
+      <p id="ppf-result" class="result"></p>
+      <p id="ppf-loading" class="loading">Calculating...</p>
+    </div>
+  </div>
+
+  <!-- Tax Calculator -->
+  <div class="card">
+    <h3>Tax Calculator</h3>
+    <div class="calculator">
+      <input type="number" id="income" placeholder="Annual Income (₹)">
+      <button onclick="calculateTax()">Calculate Tax</button>
+      <p id="tax-result" class="result"></p>
+      <p id="tax-loading" class="loading">Calculating...</p>
+    </div>
+  </div>
+
+</main>
+
+<script>
+function toggleDarkMode() { document.body.classList.toggle('dark-mode'); }
+
+function showResult(id, message) {
+  const result = document.getElementById(id);
+  result.style.display = "block";
+  result.innerText = message;
+}
+
+function showLoading(id) {
+  const loading = document.getElementById(id);
+  loading.style.display = "block";
+}
+
+function hideLoading(id) {
+  const loading = document.getElementById(id);
+  loading.style.display = "none";
+}
+
+function validateInput(inputs) {
+  for (let input of inputs) {
+    if (input.value.trim() === "" || isNaN(input.value)) {
+      alert("Please enter valid inputs.");
+      return false;
+    }
+  }
+  return true;
+}
+
+function calculateSIP() {
+  const amount = document.getElementById('sip-amount');
+  const rate = document.getElementById('sip-rate');
+  const years = document.getElementById('sip-years');
+  
+  if (!validateInput([amount, rate, years])) return;
+
+  showLoading('sip-loading');
+  const a = parseFloat(amount.value);
+  const r = parseFloat(rate.value) / 100 / 12;
+  const y = parseFloat(years.value);
+  const n = y * 12;
+  const fv = a * (((Math.pow(1 + r, n)) - 1) / r) * (1 + r);
+  
+  hideLoading('sip-loading');
+  showResult('sip-result', `Future Value: ₹${fv.toFixed(2)}`);
+}
+
+function calculateEMI() {
+  const loanAmount = document.getElementById('loan-amount');
+  const loanRate = document.getElementById('loan-rate');
+  const loanYears = document.getElementById('loan-years');
+  
+  if (!validateInput([loanAmount, loanRate, loanYears])) return;
+
+  showLoading('emi-loading');
+  const p = parseFloat(loanAmount.value);
+  const r = parseFloat(loanRate.value) / 100 / 12;
+  const n = parseFloat(loanYears.value) * 12;
+  const emi = (p * r * Math.pow(1 + r, n)) / (Math.pow(1 + r, n) - 1);
+  
+  hideLoading('emi-loading');
+  showResult('emi-result', `Monthly EMI: ₹${emi.toFixed(2)}`);
+}
+
+function calculateRetirement() {
+  const currentAge = document.getElementById('current-age');
+  const retirementAge = document.getElementById('retirement-age');
+  const monthlySaving = document.getElementById('monthly-saving');
+  const expectedReturn = document.getElementById('expected-return');
+  
+  if (!validateInput([currentAge, retirementAge, monthlySaving, expectedReturn])) return;
+
+  showLoading('retirement-loading');
+  const age = parseInt(currentAge.value);
+  const retirement = parseInt(retirementAge.value);
+  const saving = parseFloat(monthlySaving.value);
+  const rate = parseFloat(expectedReturn.value) / 100 / 12;
+  const months = (retirement - age) * 12;
+
+  const futureValue = saving * (((Math.pow(1 + rate, months)) - 1) / rate) * (1 + rate);
+  
+  hideLoading('retirement-loading');
+  showResult('retirement-result', `Amount at Retirement: ₹${futureValue.toFixed(2)}`);
+}
+
+function calculateFD() {
+  const fdPrincipal = document.getElementById('fd-principal');
+  const fdRate = document.getElementById('fd-rate');
+  const fdYears = document.getElementById('fd-years');
+  
+  if (!validateInput([fdPrincipal, fdRate, fdYears])) return;
+
+  showLoading('fd-loading');
+  const p = parseFloat(fdPrincipal.value);
+  const r = parseFloat(fdRate.value) / 100;
+  const n = parseFloat(fdYears.value);
+  const compoundInterest = p * Math.pow(1 + r, n);
+  
+  hideLoading('fd-loading');
+  showResult('fd-result', `FD Value: ₹${compoundInterest.toFixed(2)}`);
+}
+
+function calculatePPF() {
+  const ppfAmount = document.getElementById('ppf-amount');
+  const ppfRate = document.getElementById('ppf-rate');
+  const ppfYears = document.getElementById('ppf-years');
+  
+  if (!validateInput([ppfAmount, ppfRate, ppfYears])) return;
+
+  showLoading('ppf-loading');
+  const amount = parseFloat(ppfAmount.value);
+  const rate = parseFloat(ppfRate.value) / 100;
+  const years = parseFloat(ppfYears.value);
+  const compoundInterest = amount * (Math.pow(1 + rate, years));
+  
+  hideLoading('ppf-loading');
+  showResult('ppf-result', `PPF Value: ₹${compoundInterest.toFixed(2)}`);
+}
+
+function calculateTax() {
+  const income = document.getElementById('income');
+  
+  if (!validateInput([income])) return;
+
+  showLoading('tax-loading');
+  const annualIncome = parseFloat(income.value);
+  let tax = 0;
+
+  if (annualIncome <= 250000) {
+    tax = 0;
+  } else if (annualIncome <= 500000) {
+    tax = (annualIncome - 250000) * 0.05;
+  } else if (annualIncome <= 1000000) {
+    tax = 12500 + (annualIncome - 500000) * 0.2;
+  } else {
+    tax = 12500 + 100000 + (annualIncome - 1000000) * 0.3;
+  }
+  
+  hideLoading('tax-loading');
+  showResult('tax-result', `Tax Payable: ₹${tax.toFixed(2)}`);
+}
+</script>
+
+</body>
+</html>
